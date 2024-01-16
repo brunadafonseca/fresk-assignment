@@ -6,7 +6,9 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import qs from "qs";
 
 // TODO TYPES
+// @ts-ignore
 const fetchItems = (...args) =>
+  // @ts-ignore
   fetch(...args, {
     headers: {
       "Content-Type": "application/json",
@@ -15,7 +17,7 @@ const fetchItems = (...args) =>
   })
     .then((res) => res.json())
     .then((data) =>
-      data?.map((item) =>
+      data?.map((item: Record<string, ListItem[]>) =>
         item[Object.keys(item)[0]]?.reduce(
           (acc, curr) => ({ ...acc, ...curr }),
           { id: Object.keys(item)[0] }
@@ -28,15 +30,18 @@ export default function Home() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { data, error, isLoading } = useSWR(
+  const { data, error, isLoading } = useSWR<ListItem[], Error>(
     "https://tapedeck-api-fresk.vercel.app/api",
     fetchItems
   );
 
+  console.log(data, "DATA");
+
   const dataByBrands = useMemo(
     () =>
-      data?.reduce((obj, item) => {
-        obj[item.brand || "Unknown"] = [...(obj?.[item?.brand] || []), item];
+      data?.reduce<Record<string, ListItem[]>>((obj, item) => {
+        const brand = item?.brand || "Unknown";
+        obj[brand] = [...(obj?.[brand] || []), item];
 
         return obj;
       }, {}),
@@ -46,12 +51,14 @@ export default function Home() {
   const filters = useMemo(
     () =>
       data?.reduce(
-        (acc, curr) => ({
-          brands: [...acc.brands, curr.brand],
-          types: [...acc.types, curr.type],
-          playingTimes: [...acc.playingTimes, curr.playingTime],
-          colors: [...acc.colors, curr.color],
-        }),
+        (acc: any, curr) => {
+          acc.brands = [...acc.brands, curr.brand];
+          acc.types = [...acc.types, curr.type];
+          acc.playingTimes = [...acc.playingTimes, curr.playingTime];
+          acc.colors = [...acc.colors, curr.color];
+
+          return acc;
+        },
         {
           brands: [],
           colors: [],
@@ -86,9 +93,9 @@ export default function Home() {
                 !appliedFilters?.brands?.length ||
                 appliedFilters?.brands?.includes(brand)
             )
-            .reduce((acc, brand) => {
+            .reduce((acc: any, brand) => {
               acc[brand] = dataByBrands?.[brand]?.filter(
-                (item) =>
+                (item: ListItem) =>
                   (!appliedFilters?.brands?.length ||
                     appliedFilters?.brands?.includes(item?.brand)) &&
                   (!appliedFilters?.types?.length ||
@@ -115,7 +122,7 @@ export default function Home() {
     <main className="h-full w-full max-xl:min-w-full max-w-[1440px] min-xl:mx-auto min-xl:pt-14 lg:flex gap-2 md:gap-10 flex-grow max-h-full lg:overflow-hidden">
       {/* TODO sticky on mobile */}
       <aside className="bg-primary-200 rounded-sm p-3 md:p-6 lg:min-w-96 lg:max-w-96 md:min-h-full overflow-auto">
-        <Filters items={filters} appliedFilters={appliedFilters} />
+        <Filters items={filters} appliedFilters={appliedFilters as any} />
       </aside>
 
       <div className="p-3 pt-6 md:p-6 overflow-auto w-full max-h-full">
