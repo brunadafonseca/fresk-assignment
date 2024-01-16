@@ -25,7 +25,8 @@ export const ListItem = ({ item }: { item: ListItem }) => {
             alt="Tape thumbnail"
             width={300}
             height={200}
-            className="rounded-sm shadow-sm mx-auto"
+            className="rounded-sm shadow-sm mx-auto h-auto w-full"
+            priority
           />
         )}
 
