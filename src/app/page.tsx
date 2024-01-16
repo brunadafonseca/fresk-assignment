@@ -5,7 +5,7 @@ import useSWR from "swr";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import qs from "qs";
 
-// TODO TYPES
+// TODO: TYPES
 // @ts-ignore
 const fetchItems = (...args) =>
   // @ts-ignore
@@ -32,7 +32,8 @@ export default function Home() {
 
   const { data, error, isLoading } = useSWR<ListItem[], Error>(
     "https://tapedeck-api-fresk.vercel.app/api",
-    fetchItems
+    fetchItems,
+    { revalidateOnFocus: false }
   );
 
   const dataByBrands = useMemo(
