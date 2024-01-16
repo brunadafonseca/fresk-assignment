@@ -35,8 +35,6 @@ export default function Home() {
     fetchItems
   );
 
-  console.log(data, "DATA");
-
   const dataByBrands = useMemo(
     () =>
       data?.reduce<Record<string, ListItem[]>>((obj, item) => {
@@ -51,14 +49,12 @@ export default function Home() {
   const filters = useMemo(
     () =>
       data?.reduce(
-        (acc: any, curr) => {
-          acc.brands = [...acc.brands, curr.brand];
-          acc.types = [...acc.types, curr.type];
-          acc.playingTimes = [...acc.playingTimes, curr.playingTime];
-          acc.colors = [...acc.colors, curr.color];
-
-          return acc;
-        },
+        (acc: any, curr) => ({
+          brands: [...acc.brands, curr.brand],
+          types: [...acc.types, curr.type],
+          playingTimes: [...acc.playingTimes, curr.playingTime],
+          colors: [...acc.colors, curr.color],
+        }),
         {
           brands: [],
           colors: [],

@@ -23,7 +23,6 @@ export const SelectInput = ({
   layout = "horizontal",
   size = "md",
   label,
-  options,
   ...inputProps
 }: SelectInputProps) => {
   return (
@@ -45,6 +44,7 @@ export const SelectInput = ({
         </label>
       )}
 
+      {/* @ts-ignore */}
       <Select isMulti id={id} {...inputProps} />
     </div>
   );
