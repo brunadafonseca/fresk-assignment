@@ -19,16 +19,18 @@ export const ListItem = ({ item }: { item: ListItem }) => {
         href={item.page}
         className="flex flex-col bg-primary-200 p-2 rounded-xs gap-4 shadow-sm hover:shadow-md transition-shadow lg:p-5"
       >
-        {!!item?.thumb && (
-          <Image
-            src={item.thumb}
-            alt="Tape thumbnail"
-            width={300}
-            height={200}
-            className="rounded-sm shadow-sm mx-auto h-auto w-full"
-            priority
-          />
-        )}
+        {/* TODO: optimize image loading, add blur placeholder */}
+        <div className="bg-primary-400 rounded-sm shadow-sm mx-auto w-full h-auto">
+          {!!item?.thumb && (
+            <Image
+              src={item.thumb}
+              alt="Tape thumbnail"
+              width={300}
+              height={200}
+              className="rounded-sm h-auto w-full"
+            />
+          )}
+        </div>
 
         <div className="flex flex-col gap-2 text-xs border-t-[1px] border-t-primary pt-5">
           <h3 className="font-bold text-sm">{item.brand}</h3>
